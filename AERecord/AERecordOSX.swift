@@ -23,7 +23,7 @@
 //
 
 import Foundation
-import UIKit
+//import UIKit
 import CoreData
 
 let kAERecordPrintLog = true
