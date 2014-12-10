@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import AERecord
 
 let yellow = UIColor(red: 0.969, green: 0.984, blue: 0.745, alpha: 1)
 let blue = UIColor(red: 0.918, green: 0.969, blue: 0.984, alpha: 1)

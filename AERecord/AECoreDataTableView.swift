@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class CoreDataTableViewController: UITableViewController, NSFetchedResultsControllerDelegate {
+public class CoreDataTableViewController: UITableViewController, NSFetchedResultsControllerDelegate {
     
     //
     //  Swift version of class originaly created for Stanford CS193p Winter 2013.
@@ -27,7 +27,7 @@ class CoreDataTableViewController: UITableViewController, NSFetchedResultsContro
     //
     
     // The controller (this class fetches nothing if this is not set).
-    var fetchedResultsController: NSFetchedResultsController? {
+    public var fetchedResultsController: NSFetchedResultsController? {
         didSet {
             if let frc = fetchedResultsController {
                 if frc != oldValue {
@@ -46,7 +46,7 @@ class CoreDataTableViewController: UITableViewController, NSFetchedResultsContro
     //  (so if the objects in the context change, you do not need to call performFetch
     //   since the NSFetchedResultsController will notice and update the table automatically).
     // This will also automatically be called if you change the fetchedResultsController @property.
-    func performFetch() {
+    public func performFetch() {
         if let frc = fetchedResultsController {
             var error: NSError?
             if !frc.performFetch(&error) {
@@ -74,7 +74,7 @@ class CoreDataTableViewController: UITableViewController, NSFetchedResultsContro
     // It is not necessary (in fact, not desirable) to set this during row deletion or insertion
     //  (but definitely for row moves).
     private var _suspendAutomaticTrackingOfChangesInManagedObjectContext: Bool = false
-    var suspendAutomaticTrackingOfChangesInManagedObjectContext: Bool {
+    public var suspendAutomaticTrackingOfChangesInManagedObjectContext: Bool {
         get {
             return _suspendAutomaticTrackingOfChangesInManagedObjectContext
         }
@@ -90,14 +90,14 @@ class CoreDataTableViewController: UITableViewController, NSFetchedResultsContro
     
     // MARK: NSFetchedResultsControllerDelegate
     
-    func controllerWillChangeContent(controller: NSFetchedResultsController) {
+    public func controllerWillChangeContent(controller: NSFetchedResultsController) {
         if !suspendAutomaticTrackingOfChangesInManagedObjectContext {
             tableView.beginUpdates()
             beganUpdates = true
         }
     }
     
-    func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
+    public func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
         if !suspendAutomaticTrackingOfChangesInManagedObjectContext {
             switch type {
             case .Insert:
@@ -110,7 +110,7 @@ class CoreDataTableViewController: UITableViewController, NSFetchedResultsContro
         }
     }
     
-    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+    public func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
         if !suspendAutomaticTrackingOfChangesInManagedObjectContext {
             switch type {
             case .Insert:
@@ -128,7 +128,7 @@ class CoreDataTableViewController: UITableViewController, NSFetchedResultsContro
         }
     }
     
-    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+    public func controllerDidChangeContent(controller: NSFetchedResultsController) {
         if beganUpdates {
             tableView.endUpdates()
         }
@@ -136,25 +136,25 @@ class CoreDataTableViewController: UITableViewController, NSFetchedResultsContro
     
     // MARK: UITableViewDataSource
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    public override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return fetchedResultsController?.sections?.count ?? 0
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let sectionInfo = fetchedResultsController?.sections![section] as NSFetchedResultsSectionInfo
         return sectionInfo.numberOfObjects
     }
     
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    public override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         let sectionInfo = fetchedResultsController?.sections![section] as NSFetchedResultsSectionInfo
         return sectionInfo.name
     }
     
-    override func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
+    public override func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
         return fetchedResultsController?.sectionForSectionIndexTitle(title, atIndex: index) ?? 0
     }
     
-    override func sectionIndexTitlesForTableView(tableView: UITableView) -> [AnyObject]! {
+    public override func sectionIndexTitlesForTableView(tableView: UITableView) -> [AnyObject]! {
         return fetchedResultsController?.sectionIndexTitles
     }
     

@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		8B8FD1D31A0BCC3C009FAE44 /* CustomCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B8FD1D21A0BCC3C009FAE44 /* CustomCollectionViewCell.swift */; };
 		8B8FD1D61A0BE171009FAE44 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 8B8FD1D41A0BE171009FAE44 /* LICENSE */; };
-		8B975B2B1A098A4800AA3499 /* AERecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B975B2A1A098A4800AA3499 /* AERecord.swift */; };
 		8B975B2D1A098FAF00AA3499 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B975B2C1A098FAF00AA3499 /* Event.swift */; };
 		8BC895511A07930500778DB0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BC895501A07930500778DB0 /* AppDelegate.swift */; };
 		8BC895541A07930500778DB0 /* AERecordExample.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8BC895521A07930500778DB0 /* AERecordExample.xcdatamodeld */; };
@@ -19,6 +18,7 @@
 		8BC8955D1A07930500778DB0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8BC8955C1A07930500778DB0 /* Images.xcassets */; };
 		8BC895601A07930500778DB0 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8BC8955E1A07930500778DB0 /* LaunchScreen.xib */; };
 		8BC8956C1A07930500778DB0 /* AERecordExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BC8956B1A07930500778DB0 /* AERecordExampleTests.swift */; };
+		FD5BAB861A39002300611F9E /* AERecord.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD5BAB771A38FFE000611F9E /* AERecord.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,13 +29,47 @@
 			remoteGlobalIDString = 8BC8954A1A07930500778DB0;
 			remoteInfo = AERecordExample;
 		};
+		FD5BAB761A38FFE000611F9E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FD5BAB6F1A38FFE000611F9E /* AERecord.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FD5BAB081A389DBA00611F9E;
+			remoteInfo = AERecord;
+		};
+		FD5BAB781A38FFE000611F9E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FD5BAB6F1A38FFE000611F9E /* AERecord.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FD5BAB131A389DBA00611F9E;
+			remoteInfo = AERecordTests;
+		};
+		FD5BAB7A1A38FFE000611F9E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FD5BAB6F1A38FFE000611F9E /* AERecord.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FD5BAB2F1A38A06B00611F9E;
+			remoteInfo = "AERecord-OSX";
+		};
+		FD5BAB7C1A38FFE000611F9E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FD5BAB6F1A38FFE000611F9E /* AERecord.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FD5BAB391A38A06B00611F9E;
+			remoteInfo = "AERecord-OSXTests";
+		};
+		FD5BAB801A39001B00611F9E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FD5BAB6F1A38FFE000611F9E /* AERecord.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = FD5BAB071A389DBA00611F9E;
+			remoteInfo = AERecord;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		8B8FD1D21A0BCC3C009FAE44 /* CustomCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCollectionViewCell.swift; sourceTree = "<group>"; };
 		8B8FD1D41A0BE171009FAE44 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		8B8FD1D51A0BE171009FAE44 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		8B975B2A1A098A4800AA3499 /* AERecord.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AERecord.swift; sourceTree = "<group>"; };
 		8B975B2C1A098FAF00AA3499 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		8BC8954B1A07930500778DB0 /* AERecordExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AERecordExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BC8954F1A07930500778DB0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -49,6 +83,7 @@
 		8BC895651A07930500778DB0 /* AERecordExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AERecordExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BC8956A1A07930500778DB0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8BC8956B1A07930500778DB0 /* AERecordExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AERecordExampleTests.swift; sourceTree = "<group>"; };
+		FD5BAB6F1A38FFE000611F9E /* AERecord.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = AERecord.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +91,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FD5BAB861A39002300611F9E /* AERecord.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,9 +108,9 @@
 		8BC895421A07930500778DB0 = {
 			isa = PBXGroup;
 			children = (
-				8B975B2A1A098A4800AA3499 /* AERecord.swift */,
 				8BC8954D1A07930500778DB0 /* AERecordExample */,
 				8BC895681A07930500778DB0 /* AERecordExampleTests */,
+				FD5BAB7E1A38FFE500611F9E /* Frameworks */,
 				8BC8954C1A07930500778DB0 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -132,6 +168,25 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		FD5BAB701A38FFE000611F9E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FD5BAB771A38FFE000611F9E /* AERecord.framework */,
+				FD5BAB791A38FFE000611F9E /* AERecordTests.xctest */,
+				FD5BAB7B1A38FFE000611F9E /* AERecord.framework */,
+				FD5BAB7D1A38FFE000611F9E /* AERecord-OSXTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FD5BAB7E1A38FFE500611F9E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FD5BAB6F1A38FFE000611F9E /* AERecord.xcodeproj */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -146,6 +201,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				FD5BAB811A39001B00611F9E /* PBXTargetDependency */,
 			);
 			name = AERecordExample;
 			productName = AERecordExample;
@@ -199,6 +255,12 @@
 			mainGroup = 8BC895421A07930500778DB0;
 			productRefGroup = 8BC8954C1A07930500778DB0 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = FD5BAB701A38FFE000611F9E /* Products */;
+					ProjectRef = FD5BAB6F1A38FFE000611F9E /* AERecord.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				8BC8954A1A07930500778DB0 /* AERecordExample */,
@@ -206,6 +268,37 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		FD5BAB771A38FFE000611F9E /* AERecord.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = AERecord.framework;
+			remoteRef = FD5BAB761A38FFE000611F9E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FD5BAB791A38FFE000611F9E /* AERecordTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = AERecordTests.xctest;
+			remoteRef = FD5BAB781A38FFE000611F9E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FD5BAB7B1A38FFE000611F9E /* AERecord.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = AERecord.framework;
+			remoteRef = FD5BAB7A1A38FFE000611F9E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FD5BAB7D1A38FFE000611F9E /* AERecord-OSXTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "AERecord-OSXTests.xctest";
+			remoteRef = FD5BAB7C1A38FFE000611F9E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		8BC895491A07930500778DB0 /* Resources */ = {
@@ -233,7 +326,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8B975B2B1A098A4800AA3499 /* AERecord.swift in Sources */,
 				8B8FD1D31A0BCC3C009FAE44 /* CustomCollectionViewCell.swift in Sources */,
 				8BC895511A07930500778DB0 /* AppDelegate.swift in Sources */,
 				8BC895541A07930500778DB0 /* AERecordExample.xcdatamodeld in Sources */,
@@ -258,6 +350,11 @@
 			isa = PBXTargetDependency;
 			target = 8BC8954A1A07930500778DB0 /* AERecordExample */;
 			targetProxy = 8BC895661A07930500778DB0 /* PBXContainerItemProxy */;
+		};
+		FD5BAB811A39001B00611F9E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = AERecord;
+			targetProxy = FD5BAB801A39001B00611F9E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -366,7 +463,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = AERecordExample/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -378,7 +475,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = AERecordExample/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
