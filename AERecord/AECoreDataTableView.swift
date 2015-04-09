@@ -1,3 +1,6 @@
+import CoreData
+import UIKit
+
 //  MARK: - CoreData driven UITableViewController
 class CoreDataTableViewController: UITableViewController, NSFetchedResultsControllerDelegate {
     

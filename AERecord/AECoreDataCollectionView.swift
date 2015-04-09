@@ -1,3 +1,6 @@
+import CoreData
+import UIKit
+
 //  MARK: - CoreData driven UICollectionViewController
 class CoreDataCollectionViewController: UICollectionViewController, NSFetchedResultsControllerDelegate {
     
