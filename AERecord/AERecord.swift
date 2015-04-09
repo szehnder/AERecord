@@ -84,7 +84,7 @@ public class AERecord {
 }
 
 // MARK: - CoreData Stack (AERecord heart:)
-private class AEStack {
+public class AEStack {
     
     // MARK: Shared Instance
     
@@ -123,13 +123,13 @@ private class AEStack {
     
     // MARK: Setup Stack
     
-    class func storeURLForName(name: String) -> NSURL {
+    public class func storeURLForName(name: String) -> NSURL {
         let applicationDocumentsDirectory = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).last as! NSURL
         let storeName = "\(name).sqlite"
         return applicationDocumentsDirectory.URLByAppendingPathComponent(storeName)
     }
     
-    func loadCoreDataStack(managedObjectModel: NSManagedObjectModel = defaultModel,
+    public func loadCoreDataStack(managedObjectModel: NSManagedObjectModel = defaultModel,
         storeType: String = NSSQLiteStoreType,
         configuration: String? = nil,
         storeURL: NSURL = defaultURL,
