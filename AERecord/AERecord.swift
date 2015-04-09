@@ -39,45 +39,45 @@ public class AERecord {
     
     // MARK: Setup Stack
     
-    class func storeURLForName(name: String) -> NSURL {
+    public class func storeURLForName(name: String) -> NSURL {
         return AEStack.storeURLForName(name)
     }
     
-    class func loadCoreDataStack(managedObjectModel: NSManagedObjectModel = AEStack.defaultModel, storeType: String = NSSQLiteStoreType, configuration: String? = nil, storeURL: NSURL = AEStack.defaultURL, options: [NSObject : AnyObject]? = nil) -> NSError? {
+    public class func loadCoreDataStack(managedObjectModel: NSManagedObjectModel = AEStack.defaultModel, storeType: String = NSSQLiteStoreType, configuration: String? = nil, storeURL: NSURL = AEStack.defaultURL, options: [NSObject : AnyObject]? = nil) -> NSError? {
         return AEStack.sharedInstance.loadCoreDataStack(managedObjectModel: managedObjectModel, storeType: storeType, configuration: configuration, storeURL: storeURL, options: options)
     }
     
-    class func destroyCoreDataStack(storeURL: NSURL = AEStack.defaultURL) {
+    public class func destroyCoreDataStack(storeURL: NSURL = AEStack.defaultURL) {
         AEStack.sharedInstance.destroyCoreDataStack(storeURL: storeURL)
     }
     
-    class func truncateAllData(context: NSManagedObjectContext? = nil) {
+    public class func truncateAllData(context: NSManagedObjectContext? = nil) {
         AEStack.sharedInstance.truncateAllData(context: context)
     }
     
     // MARK: Context Execute
     
-    class func executeFetchRequest(request: NSFetchRequest, context: NSManagedObjectContext? = nil) -> [NSManagedObject] {
+    public class func executeFetchRequest(request: NSFetchRequest, context: NSManagedObjectContext? = nil) -> [NSManagedObject] {
         return AEStack.sharedInstance.executeFetchRequest(request, context: context)
     }
     
     // MARK: Context Save
     
-    class func saveContext(context: NSManagedObjectContext? = nil) {
+    public class func saveContext(context: NSManagedObjectContext? = nil) {
         AEStack.sharedInstance.saveContext(context: context)
     }
     
-    class func saveContextAndWait(context: NSManagedObjectContext? = nil) {
+    public class func saveContextAndWait(context: NSManagedObjectContext? = nil) {
         AEStack.sharedInstance.saveContextAndWait(context: context)
     }
     
     // MARK: Context Faulting Objects
     
-    class func refreshObjects(#objectIDS: [NSManagedObjectID], mergeChanges: Bool, context: NSManagedObjectContext = AERecord.defaultContext) {
+    public class func refreshObjects(#objectIDS: [NSManagedObjectID], mergeChanges: Bool, context: NSManagedObjectContext = AERecord.defaultContext) {
         AEStack.refreshObjects(objectIDS: objectIDS, mergeChanges: mergeChanges, context: context)
     }
     
-    class func refreshAllRegisteredObjects(#mergeChanges: Bool, context: NSManagedObjectContext = AERecord.defaultContext) {
+    public class func refreshAllRegisteredObjects(#mergeChanges: Bool, context: NSManagedObjectContext = AERecord.defaultContext) {
         AEStack.refreshAllRegisteredObjects(mergeChanges: mergeChanges, context: context)
     }
     
