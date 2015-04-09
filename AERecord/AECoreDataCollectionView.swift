@@ -1,15 +1,5 @@
-//
-//  AECoreDataCollectionView.swift
-//  AERecord
-//
-//  Created by Sean Zehnder on 12/10/14.
-//  Copyright (c) 2014 Tadija. All rights reserved.
-//
-
-import UIKit
-import CoreData
-
-public class CoreDataCollectionViewController: UICollectionViewController, NSFetchedResultsControllerDelegate {
+//  MARK: - CoreData driven UICollectionViewController
+class CoreDataCollectionViewController: UICollectionViewController, NSFetchedResultsControllerDelegate {
     
     //
     //  Same concept as CoreDataTableViewController, but modified for use with UICollectionViewController.
@@ -27,7 +17,7 @@ public class CoreDataCollectionViewController: UICollectionViewController, NSFet
     //
     
     // The controller (this class fetches nothing if this is not set).
-   public  var fetchedResultsController: NSFetchedResultsController? {
+    var fetchedResultsController: NSFetchedResultsController? {
         didSet {
             if let frc = fetchedResultsController {
                 if frc != oldValue {
@@ -35,7 +25,7 @@ public class CoreDataCollectionViewController: UICollectionViewController, NSFet
                     performFetch()
                 }
             } else {
-                collectionView!.reloadData()
+                collectionView?.reloadData()
             }
         }
     }
@@ -46,7 +36,7 @@ public class CoreDataCollectionViewController: UICollectionViewController, NSFet
     //  (so if the objects in the context change, you do not need to call performFetch
     //   since the NSFetchedResultsController will notice and update the collection view automatically).
     // This will also automatically be called if you change the fetchedResultsController @property.
-    public func performFetch() {
+    func performFetch() {
         if let frc = fetchedResultsController {
             var error: NSError?
             if !frc.performFetch(&error) {
@@ -56,7 +46,7 @@ public class CoreDataCollectionViewController: UICollectionViewController, NSFet
                     }
                 }
             }
-            collectionView!.reloadData()
+            collectionView?.reloadData()
         }
     }
     
@@ -74,7 +64,7 @@ public class CoreDataCollectionViewController: UICollectionViewController, NSFet
     // It is not necessary (in fact, not desirable) to set this during row deletion or insertion
     //  (but definitely for cell moves).
     private var _suspendAutomaticTrackingOfChangesInManagedObjectContext: Bool = false
-    public var suspendAutomaticTrackingOfChangesInManagedObjectContext: Bool {
+    var suspendAutomaticTrackingOfChangesInManagedObjectContext: Bool {
         get {
             return _suspendAutomaticTrackingOfChangesInManagedObjectContext
         }
@@ -99,44 +89,44 @@ public class CoreDataCollectionViewController: UICollectionViewController, NSFet
     private var objectMoves = [NSIndexPath]()
     private var objectReloads = NSMutableSet()
     
-    public func updateSectionsAndObjects() {
+    func updateSectionsAndObjects() {
         // sections
         if !self.sectionInserts.isEmpty {
             for sectionIndex in self.sectionInserts {
-                self.collectionView!.insertSections(NSIndexSet(index: sectionIndex))
+                self.collectionView?.insertSections(NSIndexSet(index: sectionIndex))
             }
             self.sectionInserts.removeAll(keepCapacity: true)
         }
         if !self.sectionDeletes.isEmpty {
             for sectionIndex in self.sectionDeletes {
-                self.collectionView!.deleteSections(NSIndexSet(index: sectionIndex))
+                self.collectionView?.deleteSections(NSIndexSet(index: sectionIndex))
             }
             self.sectionDeletes.removeAll(keepCapacity: true)
         }
         if !self.sectionUpdates.isEmpty {
             for sectionIndex in self.sectionUpdates {
-                self.collectionView!.reloadSections(NSIndexSet(index: sectionIndex))
+                self.collectionView?.reloadSections(NSIndexSet(index: sectionIndex))
             }
             self.sectionUpdates.removeAll(keepCapacity: true)
         }
         // objects
         if !self.objectInserts.isEmpty {
-            self.collectionView!.insertItemsAtIndexPaths(self.objectInserts)
+            self.collectionView?.insertItemsAtIndexPaths(self.objectInserts)
             self.objectInserts.removeAll(keepCapacity: true)
         }
         if !self.objectDeletes.isEmpty {
-            self.collectionView!.deleteItemsAtIndexPaths(self.objectDeletes)
+            self.collectionView?.deleteItemsAtIndexPaths(self.objectDeletes)
             self.objectDeletes.removeAll(keepCapacity: true)
         }
         if !self.objectUpdates.isEmpty {
-            self.collectionView!.reloadItemsAtIndexPaths(self.objectUpdates)
+            self.collectionView?.reloadItemsAtIndexPaths(self.objectUpdates)
             self.objectUpdates.removeAll(keepCapacity: true)
         }
         if !self.objectMoves.isEmpty {
             let moveOperations = objectMoves.count / 2
             var index = 0
             for i in 0 ..< moveOperations {
-                self.collectionView!.moveItemAtIndexPath(self.objectMoves[index], toIndexPath: self.objectMoves[index + 1])
+                self.collectionView?.moveItemAtIndexPath(self.objectMoves[index], toIndexPath: self.objectMoves[index + 1])
                 index = index + 2
             }
             self.objectMoves.removeAll(keepCapacity: true)
@@ -145,7 +135,7 @@ public class CoreDataCollectionViewController: UICollectionViewController, NSFet
     
     // MARK: NSFetchedResultsControllerDelegate
     
-    public func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
+    func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
         switch type {
         case .Insert:
             sectionInserts.append(sectionIndex)
@@ -158,7 +148,7 @@ public class CoreDataCollectionViewController: UICollectionViewController, NSFet
         }
     }
     
-    public func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
         switch type {
         case .Insert:
             objectInserts.append(newIndexPath!)
@@ -174,15 +164,15 @@ public class CoreDataCollectionViewController: UICollectionViewController, NSFet
         }
     }
     
-    public func controllerDidChangeContent(controller: NSFetchedResultsController) {
+    func controllerDidChangeContent(controller: NSFetchedResultsController) {
         if !suspendAutomaticTrackingOfChangesInManagedObjectContext {
             // do batch updates on collection view
-            collectionView!.performBatchUpdates({ () -> Void in
+            collectionView?.performBatchUpdates({ () -> Void in
                 self.updateSectionsAndObjects()
                 }, completion: { (finished) -> Void in
                     // reload moved items when finished
                     if self.objectReloads.count > 0 {
-                        self.collectionView!.reloadItemsAtIndexPaths(self.objectReloads.allObjects)
+                        self.collectionView?.reloadItemsAtIndexPaths(self.objectReloads.allObjects)
                         self.objectReloads.removeAllObjects()
                     }
             })
@@ -191,13 +181,12 @@ public class CoreDataCollectionViewController: UICollectionViewController, NSFet
     
     // MARK: UICollectionViewDataSource
     
-    override public func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+    override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         return fetchedResultsController?.sections?.count ?? 0
     }
     
-    override public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let sectionInfo = fetchedResultsController?.sections![section] as NSFetchedResultsSectionInfo
-        return sectionInfo.numberOfObjects
+    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return (fetchedResultsController?.sections?[section] as? NSFetchedResultsSectionInfo)?.numberOfObjects ?? 0
     }
     
 }

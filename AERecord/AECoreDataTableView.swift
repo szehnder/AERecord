@@ -1,15 +1,5 @@
-//
-//  AECoreDataTableView.swift
-//  AERecord
-//
-//  Created by Sean Zehnder on 12/10/14.
-//  Copyright (c) 2014 Tadija. All rights reserved.
-//
-
-import UIKit
-import CoreData
-
-public class CoreDataTableViewController: UITableViewController, NSFetchedResultsControllerDelegate {
+//  MARK: - CoreData driven UITableViewController
+class CoreDataTableViewController: UITableViewController, NSFetchedResultsControllerDelegate {
     
     //
     //  Swift version of class originaly created for Stanford CS193p Winter 2013.
@@ -27,7 +17,7 @@ public class CoreDataTableViewController: UITableViewController, NSFetchedResult
     //
     
     // The controller (this class fetches nothing if this is not set).
-    public var fetchedResultsController: NSFetchedResultsController? {
+    var fetchedResultsController: NSFetchedResultsController? {
         didSet {
             if let frc = fetchedResultsController {
                 if frc != oldValue {
@@ -46,7 +36,7 @@ public class CoreDataTableViewController: UITableViewController, NSFetchedResult
     //  (so if the objects in the context change, you do not need to call performFetch
     //   since the NSFetchedResultsController will notice and update the table automatically).
     // This will also automatically be called if you change the fetchedResultsController @property.
-    public func performFetch() {
+    func performFetch() {
         if let frc = fetchedResultsController {
             var error: NSError?
             if !frc.performFetch(&error) {
@@ -74,7 +64,7 @@ public class CoreDataTableViewController: UITableViewController, NSFetchedResult
     // It is not necessary (in fact, not desirable) to set this during row deletion or insertion
     //  (but definitely for row moves).
     private var _suspendAutomaticTrackingOfChangesInManagedObjectContext: Bool = false
-    public var suspendAutomaticTrackingOfChangesInManagedObjectContext: Bool {
+    var suspendAutomaticTrackingOfChangesInManagedObjectContext: Bool {
         get {
             return _suspendAutomaticTrackingOfChangesInManagedObjectContext
         }
@@ -90,14 +80,14 @@ public class CoreDataTableViewController: UITableViewController, NSFetchedResult
     
     // MARK: NSFetchedResultsControllerDelegate
     
-    public func controllerWillChangeContent(controller: NSFetchedResultsController) {
+    func controllerWillChangeContent(controller: NSFetchedResultsController) {
         if !suspendAutomaticTrackingOfChangesInManagedObjectContext {
             tableView.beginUpdates()
             beganUpdates = true
         }
     }
     
-    public func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
+    func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
         if !suspendAutomaticTrackingOfChangesInManagedObjectContext {
             switch type {
             case .Insert:
@@ -110,7 +100,7 @@ public class CoreDataTableViewController: UITableViewController, NSFetchedResult
         }
     }
     
-    public func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
         if !suspendAutomaticTrackingOfChangesInManagedObjectContext {
             switch type {
             case .Insert:
@@ -128,7 +118,7 @@ public class CoreDataTableViewController: UITableViewController, NSFetchedResult
         }
     }
     
-    public func controllerDidChangeContent(controller: NSFetchedResultsController) {
+    func controllerDidChangeContent(controller: NSFetchedResultsController) {
         if beganUpdates {
             tableView.endUpdates()
         }
@@ -136,25 +126,23 @@ public class CoreDataTableViewController: UITableViewController, NSFetchedResult
     
     // MARK: UITableViewDataSource
     
-    public override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return fetchedResultsController?.sections?.count ?? 0
     }
     
-    public override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let sectionInfo = fetchedResultsController?.sections![section] as NSFetchedResultsSectionInfo
-        return sectionInfo.numberOfObjects
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return (fetchedResultsController?.sections?[section] as? NSFetchedResultsSectionInfo)?.numberOfObjects ?? 0
     }
     
-    public override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let sectionInfo = fetchedResultsController?.sections![section] as NSFetchedResultsSectionInfo
-        return sectionInfo.name
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return (fetchedResultsController?.sections?[section] as? NSFetchedResultsSectionInfo)?.name
     }
     
-    public override func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
+    override func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
         return fetchedResultsController?.sectionForSectionIndexTitle(title, atIndex: index) ?? 0
     }
     
-    public override func sectionIndexTitlesForTableView(tableView: UITableView) -> [AnyObject]! {
+    override func sectionIndexTitlesForTableView(tableView: UITableView) -> [AnyObject]! {
         return fetchedResultsController?.sectionIndexTitles
     }
     
