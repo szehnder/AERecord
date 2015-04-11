@@ -198,7 +198,7 @@ public class AEStack {
         return error ?? nil
     }
     
-    func truncateAllData(context: NSManagedObjectContext? = nil) {
+    public func truncateAllData(context: NSManagedObjectContext? = nil) {
         let moc = context ?? defaultContext
         if let mom = managedObjectModel {
             for entity in mom.entities as! [NSEntityDescription] {
@@ -322,21 +322,21 @@ public class AEStack {
 }
 
 // MARK: - NSManagedObject Extension
-extension NSManagedObject {
+public extension NSManagedObject {
     
     // MARK: General
     
-    class var entityName: String {
+    public class var entityName: String {
         var name = NSStringFromClass(self)
         name = name.componentsSeparatedByString(".").last
         return name
     }
     
-    class var entity: NSEntityDescription? {
+    public class var entity: NSEntityDescription? {
         return NSEntityDescription.entityForName(entityName, inManagedObjectContext: AERecord.defaultContext)
     }
     
-    class func createFetchRequest(predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor]? = nil) -> NSFetchRequest {
+    public class func createFetchRequest(predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor]? = nil) -> NSFetchRequest {
         // create request
         let request = NSFetchRequest(entityName: entityName)
         // set request parameters
@@ -347,13 +347,13 @@ extension NSManagedObject {
     
     // MARK: Creating
     
-    class func create(context: NSManagedObjectContext = AERecord.defaultContext) -> Self {
+    public class func create(context: NSManagedObjectContext = AERecord.defaultContext) -> Self {
         let entityDescription = NSEntityDescription.entityForName(entityName, inManagedObjectContext: context)
         let object = self(entity: entityDescription!, insertIntoManagedObjectContext: context)
         return object
     }
     
-    class func createWithAttributes(attributes: [NSObject : AnyObject], context: NSManagedObjectContext = AERecord.defaultContext) -> Self {
+    public class func createWithAttributes(attributes: [NSObject : AnyObject], context: NSManagedObjectContext = AERecord.defaultContext) -> Self {
         let object = create(context: context)
         if attributes.count > 0 {
             object.setValuesForKeysWithDictionary(attributes)
@@ -361,7 +361,7 @@ extension NSManagedObject {
         return object
     }
     
-    class func firstOrCreateWithAttribute(attribute: String, value: AnyObject, context: NSManagedObjectContext = AERecord.defaultContext) -> NSManagedObject {
+    public class func firstOrCreateWithAttribute(attribute: String, value: AnyObject, context: NSManagedObjectContext = AERecord.defaultContext) -> NSManagedObject {
         let predicate = NSPredicate(format: "%K = %@", argumentArray: [attribute, value])
         let request = createFetchRequest(predicate: predicate)
         request.fetchLimit = 1
@@ -371,11 +371,11 @@ extension NSManagedObject {
     
     // MARK: Deleting
     
-    func delete(context: NSManagedObjectContext = AERecord.defaultContext) {
+    public func delete(context: NSManagedObjectContext = AERecord.defaultContext) {
         context.deleteObject(self)
     }
     
-    class func deleteAll(context: NSManagedObjectContext = AERecord.defaultContext) {
+    public class func deleteAll(context: NSManagedObjectContext = AERecord.defaultContext) {
         if let objects = self.all(context: context) {
             for object in objects {
                 context.deleteObject(object)
@@ -383,7 +383,7 @@ extension NSManagedObject {
         }
     }
     
-    class func deleteAllWithPredicate(predicate: NSPredicate, context: NSManagedObjectContext = AERecord.defaultContext) {
+    public class func deleteAllWithPredicate(predicate: NSPredicate, context: NSManagedObjectContext = AERecord.defaultContext) {
         if let objects = self.allWithPredicate(predicate, context: context) {
             for object in objects {
                 context.deleteObject(object)
@@ -391,7 +391,7 @@ extension NSManagedObject {
         }
     }
     
-    class func deleteAllWithAttribute(attribute: String, value: AnyObject, context: NSManagedObjectContext = AERecord.defaultContext) {
+    public class func deleteAllWithAttribute(attribute: String, value: AnyObject, context: NSManagedObjectContext = AERecord.defaultContext) {
         if let objects = self.allWithAttribute(attribute, value: value, context: context) {
             for object in objects {
                 context.deleteObject(object)
