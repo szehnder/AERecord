@@ -41,14 +41,16 @@ class CoreDataTableViewController: UITableViewController, NSFetchedResultsContro
     // This will also automatically be called if you change the fetchedResultsController @property.
     func performFetch() {
         if let frc = fetchedResultsController {
-            var error: NSError?
-            if !frc.performFetch(&error) {
-                if let err = error {
-                    if kAERecordPrintLog {
-                        println("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(err)")
-                    }
+            do  {
+                try frc.performFetch()
+            } catch let error as NSError {
+                if kAERecordPrintLog {
+                    print("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(error)")
                 }
+            } catch _ {
+                // FIXME: fatal?
             }
+
             tableView.reloadData()
         }
     }
@@ -103,7 +105,7 @@ class CoreDataTableViewController: UITableViewController, NSFetchedResultsContro
         }
     }
     
-    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+    func controller(controller: NSFetchedResultsController, didChangeObject anObject: NSManagedObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
         if !suspendAutomaticTrackingOfChangesInManagedObjectContext {
             switch type {
             case .Insert:
@@ -115,8 +117,6 @@ class CoreDataTableViewController: UITableViewController, NSFetchedResultsContro
             case .Move:
                 tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
                 tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
-            default:
-                return
             }
         }
     }
@@ -134,18 +134,26 @@ class CoreDataTableViewController: UITableViewController, NSFetchedResultsContro
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return (fetchedResultsController?.sections?[section] as? NSFetchedResultsSectionInfo)?.numberOfObjects ?? 0
+        if (fetchedResultsController != nil && fetchedResultsController!.sections != nil) {
+            let sectionInfo = fetchedResultsController!.sections![section]
+            return sectionInfo.numberOfObjects
+        }
+        return 0
     }
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return (fetchedResultsController?.sections?[section] as? NSFetchedResultsSectionInfo)?.name
+        if (fetchedResultsController != nil && fetchedResultsController!.sections != nil) {
+            let sectionInfo = fetchedResultsController!.sections![section]
+            return sectionInfo.name
+        }
+        return nil
     }
     
     override func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
         return fetchedResultsController?.sectionForSectionIndexTitle(title, atIndex: index) ?? 0
     }
     
-    override func sectionIndexTitlesForTableView(tableView: UITableView) -> [AnyObject]! {
+    override func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]? {
         return fetchedResultsController?.sectionIndexTitles
     }
     

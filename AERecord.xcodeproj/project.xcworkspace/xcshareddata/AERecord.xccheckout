@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>54ECB3B9-8E71-4937-AB40-87D0C8022F9B</string>
+	<key>IDESourceControlProjectName</key>
+	<string>AERecord</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>AD5F31FC8FD595449195D2AFDB2BF965149B9501</key>
+		<string>https://github.com/szehnder/AERecord.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>AERecord.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>AD5F31FC8FD595449195D2AFDB2BF965149B9501</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/szehnder/AERecord.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>AD5F31FC8FD595449195D2AFDB2BF965149B9501</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>AD5F31FC8FD595449195D2AFDB2BF965149B9501</string>
+			<key>IDESourceControlWCCName</key>
+			<string>AERecord</string>
+		</dict>
+	</array>
+</dict>
+</plist>

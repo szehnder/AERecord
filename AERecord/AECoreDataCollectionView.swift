@@ -41,13 +41,14 @@ class CoreDataCollectionViewController: UICollectionViewController, NSFetchedRes
     // This will also automatically be called if you change the fetchedResultsController @property.
     func performFetch() {
         if let frc = fetchedResultsController {
-            var error: NSError?
-            if !frc.performFetch(&error) {
-                if let err = error {
-                    if kAERecordPrintLog {
-                        println("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(err)")
-                    }
+            do {
+                try frc.performFetch()
+            } catch let error as NSError {
+                if kAERecordPrintLog {
+                    print("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(error)")
                 }
+            } catch _ {
+                // FIXME: fatal?
             }
             collectionView?.reloadData()
         }
@@ -128,7 +129,7 @@ class CoreDataCollectionViewController: UICollectionViewController, NSFetchedRes
         if !self.objectMoves.isEmpty {
             let moveOperations = objectMoves.count / 2
             var index = 0
-            for i in 0 ..< moveOperations {
+            for _ in 0 ..< moveOperations {
                 self.collectionView?.moveItemAtIndexPath(self.objectMoves[index], toIndexPath: self.objectMoves[index + 1])
                 index = index + 2
             }
@@ -151,7 +152,7 @@ class CoreDataCollectionViewController: UICollectionViewController, NSFetchedRes
         }
     }
     
-    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+    func controller(controller: NSFetchedResultsController, didChangeObject anObject: NSManagedObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
         switch type {
         case .Insert:
             objectInserts.append(newIndexPath!)
@@ -175,7 +176,7 @@ class CoreDataCollectionViewController: UICollectionViewController, NSFetchedRes
                 }, completion: { (finished) -> Void in
                     // reload moved items when finished
                     if self.objectReloads.count > 0 {
-                        self.collectionView?.reloadItemsAtIndexPaths(self.objectReloads.allObjects)
+                        self.collectionView?.reloadItemsAtIndexPaths(self.objectReloads.allObjects as! [NSIndexPath])
                         self.objectReloads.removeAllObjects()
                     }
             })
@@ -189,7 +190,11 @@ class CoreDataCollectionViewController: UICollectionViewController, NSFetchedRes
     }
     
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return (fetchedResultsController?.sections?[section] as? NSFetchedResultsSectionInfo)?.numberOfObjects ?? 0
+        if (fetchedResultsController != nil && fetchedResultsController!.sections != nil) {
+            let sectionInfo = fetchedResultsController!.sections![section]
+            return sectionInfo.numberOfObjects
+        }
+        return 0
     }
     
 }

@@ -11,8 +11,6 @@
 		FD5BAB141A389DBA00611F9E /* AERecord.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD5BAB081A389DBA00611F9E /* AERecord.framework */; };
 		FD5BAB1B1A389DBA00611F9E /* AERecordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5BAB1A1A389DBA00611F9E /* AERecordTests.swift */; };
 		FD5BAB251A389E4300611F9E /* AERecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5BAB241A389E4300611F9E /* AERecord.swift */; };
-		FD5BAB271A389F3600611F9E /* AECoreDataCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5BAB261A389F3600611F9E /* AECoreDataCollectionView.swift */; };
-		FD5BAB291A389FC100611F9E /* AECoreDataTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5BAB281A389FC100611F9E /* AECoreDataTableView.swift */; };
 		FD5BAB341A38A06B00611F9E /* AERecord-OSX.h in Headers */ = {isa = PBXBuildFile; fileRef = FD5BAB331A38A06B00611F9E /* AERecord-OSX.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FD5BAB3A1A38A06B00611F9E /* AERecord.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD5BAB2F1A38A06B00611F9E /* AERecord.framework */; };
 		FD5BAB411A38A06B00611F9E /* AERecord_OSXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5BAB401A38A06B00611F9E /* AERecord_OSXTests.swift */; };
@@ -281,7 +279,8 @@
 		FD5BAAFF1A389DBA00611F9E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = Tadija;
 				TargetAttributes = {
 					FD5BAB071A389DBA00611F9E = {
@@ -355,8 +354,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FD5BAB251A389E4300611F9E /* AERecord.swift in Sources */,
-				FD5BAB291A389FC100611F9E /* AECoreDataTableView.swift in Sources */,
-				FD5BAB271A389F3600611F9E /* AECoreDataCollectionView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -421,6 +418,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -496,6 +494,7 @@
 				INFOPLIST_FILE = AERecord/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.tadija.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -513,6 +512,7 @@
 				INFOPLIST_FILE = AERecord/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.tadija.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -531,6 +531,7 @@
 				);
 				INFOPLIST_FILE = AERecordTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.tadija.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -544,6 +545,7 @@
 				);
 				INFOPLIST_FILE = AERecordTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.tadija.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -565,6 +567,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.tadija.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AERecord;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -585,6 +588,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.tadija.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AERecord;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -606,6 +610,7 @@
 				INFOPLIST_FILE = "AERecord-OSXTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.tadija.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -623,6 +628,7 @@
 				INFOPLIST_FILE = "AERecord-OSXTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.tadija.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -665,6 +671,7 @@
 				FD5BAB441A38A06B00611F9E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		FD5BAB451A38A06B00611F9E /* Build configuration list for PBXNativeTarget "AERecord-OSXTests" */ = {
 			isa = XCConfigurationList;
@@ -673,6 +680,7 @@
 				FD5BAB471A38A06B00611F9E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

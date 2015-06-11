@@ -44,15 +44,15 @@ public class AERecord {
     }
     
     public class func loadCoreDataStack(managedObjectModel: NSManagedObjectModel = AEStack.defaultModel, storeType: String = NSSQLiteStoreType, configuration: String? = nil, storeURL: NSURL = AEStack.defaultURL, options: [NSObject : AnyObject]? = nil) -> NSError? {
-        return AEStack.sharedInstance.loadCoreDataStack(managedObjectModel: managedObjectModel, storeType: storeType, configuration: configuration, storeURL: storeURL, options: options)
+        return AEStack.sharedInstance.loadCoreDataStack(managedObjectModel, storeType: storeType, configuration: configuration, storeURL: storeURL, options: options)
     }
     
     public class func destroyCoreDataStack(storeURL: NSURL = AEStack.defaultURL) {
-        AEStack.sharedInstance.destroyCoreDataStack(storeURL: storeURL)
+        AEStack.sharedInstance.destroyCoreDataStack(storeURL)
     }
     
     public class func truncateAllData(context: NSManagedObjectContext? = nil) {
-        AEStack.sharedInstance.truncateAllData(context: context)
+        AEStack.sharedInstance.truncateAllData(context)
     }
     
     // MARK: Context Execute
@@ -64,20 +64,20 @@ public class AERecord {
     // MARK: Context Save
     
     public class func saveContext(context: NSManagedObjectContext? = nil) {
-        AEStack.sharedInstance.saveContext(context: context)
+        AEStack.sharedInstance.saveContext(context)
     }
     
     public class func saveContextAndWait(context: NSManagedObjectContext? = nil) {
-        AEStack.sharedInstance.saveContextAndWait(context: context)
+        AEStack.sharedInstance.saveContextAndWait(context)
     }
     
     // MARK: Context Faulting Objects
     
-    public class func refreshObjects(#objectIDS: [NSManagedObjectID], mergeChanges: Bool, context: NSManagedObjectContext = AERecord.defaultContext) {
+    public class func refreshObjects(objectIDS: [NSManagedObjectID], mergeChanges: Bool, context: NSManagedObjectContext = AERecord.defaultContext) {
         AEStack.refreshObjects(objectIDS: objectIDS, mergeChanges: mergeChanges, context: context)
     }
     
-    public class func refreshAllRegisteredObjects(#mergeChanges: Bool, context: NSManagedObjectContext = AERecord.defaultContext) {
+    public class func refreshAllRegisteredObjects(mergeChanges: Bool, context: NSManagedObjectContext = AERecord.defaultContext) {
         AEStack.refreshAllRegisteredObjects(mergeChanges: mergeChanges, context: context)
     }
     
@@ -124,7 +124,7 @@ public class AEStack {
     // MARK: Setup Stack
     
     public class func storeURLForName(name: String) -> NSURL {
-        let applicationDocumentsDirectory = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).last as! NSURL
+        let applicationDocumentsDirectory = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).last! as NSURL
         let storeName = "\(name).sqlite"
         return applicationDocumentsDirectory.URLByAppendingPathComponent(storeName)
     }
@@ -145,7 +145,15 @@ public class AEStack {
         persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
         if let coordinator = persistentStoreCoordinator {
             var error: NSError?
-            if coordinator.addPersistentStoreWithType(storeType, configuration: configuration, URL: storeURL, options: options, error: &error) == nil {
+            do {
+                try coordinator.addPersistentStoreWithType(storeType, configuration: configuration, URL: storeURL, options: options)
+                // everything went ok
+                mainContext.persistentStoreCoordinator = coordinator
+                backgroundContext.persistentStoreCoordinator = coordinator
+                startReceivingContextNotifications()
+                return nil
+            } catch let error1 as NSError {
+                error = error1
                 var userInfoDictionary = [NSObject : AnyObject]()
                 userInfoDictionary[NSLocalizedDescriptionKey] = "Failed to initialize the application's saved data"
                 userInfoDictionary[NSLocalizedFailureReasonErrorKey] = "There was an error creating or loading the application's saved data."
@@ -153,16 +161,10 @@ public class AEStack {
                 error = NSError(domain: AEStack.bundleIdentifier, code: 1, userInfo: userInfoDictionary)
                 if let err = error {
                     if kAERecordPrintLog {
-                        println("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(err)")
+                        print("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(err)")
                     }
                 }
                 return error
-            } else {
-                // everything went ok
-                mainContext.persistentStoreCoordinator = coordinator
-                backgroundContext.persistentStoreCoordinator = coordinator
-                startReceivingContextNotifications()
-                return nil
             }
         } else {
             return NSError(domain: AEStack.bundleIdentifier, code: 2, userInfo: [NSLocalizedDescriptionKey : "Could not create NSPersistentStoreCoordinator from given NSManagedObjectModel."])
@@ -181,8 +183,15 @@ public class AEStack {
         var error: NSError?
         if let coordinator = persistentStoreCoordinator {
             if let store = coordinator.persistentStoreForURL(storeURL) {
-                if coordinator.removePersistentStore(store, error: &error) {
-                    NSFileManager.defaultManager().removeItemAtURL(storeURL, error: &error)
+                do {
+                    try coordinator.removePersistentStore(store)
+                    do {
+                        try NSFileManager.defaultManager().removeItemAtURL(storeURL)
+                    } catch let error1 as NSError {
+                        error = error1
+                    }
+                } catch let error1 as NSError {
+                    error = error1
                 }
             }
         }
@@ -192,7 +201,7 @@ public class AEStack {
         
         if let err = error {
             if kAERecordPrintLog {
-                println("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(err)")
+                print("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(err)")
             }
         }
         return error ?? nil
@@ -201,9 +210,9 @@ public class AEStack {
     public func truncateAllData(context: NSManagedObjectContext? = nil) {
         let moc = context ?? defaultContext
         if let mom = managedObjectModel {
-            for entity in mom.entities as! [NSEntityDescription] {
+            for entity in mom.entities as [NSEntityDescription] {
                 if let entityType = NSClassFromString(entity.managedObjectClassName) as? NSManagedObject.Type {
-                    entityType.deleteAll(context: moc)
+                    entityType.deleteAll(moc)
                 }
             }
         }
@@ -212,7 +221,7 @@ public class AEStack {
     deinit {
         stopReceivingContextNotifications()
         if kAERecordPrintLog {
-            println("\(NSStringFromClass(self.dynamicType)) deinitialized - function: \(__FUNCTION__) | line: \(__LINE__)\n")
+            print("\(NSStringFromClass(self.dynamicType)) deinitialized - function: \(__FUNCTION__) | line: \(__LINE__)\n")
         }
     }
     
@@ -223,14 +232,19 @@ public class AEStack {
         let moc = context ?? defaultContext
         moc.performBlockAndWait { () -> Void in
             var error: NSError?
-            if let result = moc.executeFetchRequest(request, error: &error) {
+            do {
+                let result = try moc.executeFetchRequest(request)
                 if let managedObjects = result as? [NSManagedObject] {
                     fetchedObjects = managedObjects
                 }
+            } catch let error1 as NSError {
+                error = error1
+            } catch {
+                fatalError()
             }
             if let err = error {
                 if kAERecordPrintLog {
-                    println("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(err)")
+                    print("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(err)")
                 }
             }
         }
@@ -242,12 +256,15 @@ public class AEStack {
     func saveContext(context: NSManagedObjectContext? = nil) {
         let moc = context ?? defaultContext
         moc.performBlock { () -> Void in
-            var error: NSError?
-            if moc.hasChanges && !moc.save(&error) {
-                if let err = error {
+            if (moc.hasChanges) {
+                do {
+                    try moc.save()
+                } catch let error as NSError {
                     if kAERecordPrintLog {
-                        println("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(err)")
+                        print("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(error)")
                     }
+                } catch _ {
+                    // FIXME: do something with other exception
                 }
             }
         }
@@ -256,12 +273,15 @@ public class AEStack {
     func saveContextAndWait(context: NSManagedObjectContext? = nil) {
         let moc = context ?? defaultContext
         moc.performBlockAndWait { () -> Void in
-            var error: NSError?
-            if moc.hasChanges && !moc.save(&error) {
-                if let err = error {
+            if moc.hasChanges {
+                do {
+                    try moc.save()
+                } catch let error as NSError {
                     if kAERecordPrintLog {
-                        println("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(err)")
+                        print("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(error)")
                     }
+                } catch _ {
+                    // FIXME: do something with other exception
                 }
             }
         }
@@ -289,32 +309,31 @@ public class AEStack {
     
     // MARK: Context Faulting Objects
     
-    class func refreshObjects(#objectIDS: [NSManagedObjectID], mergeChanges: Bool, context: NSManagedObjectContext = AERecord.defaultContext) {
+    class func refreshObjects(objectIDS objectIDS: [NSManagedObjectID], mergeChanges: Bool, context: NSManagedObjectContext = AERecord.defaultContext) {
         for objectID in objectIDS {
-            var error: NSError?
             context.performBlockAndWait({ () -> Void in
-                if let object = context.existingObjectWithID(objectID, error: &error) {
-                    if !object.fault && error == nil {
+                do {
+                    let object = try context.existingObjectWithID(objectID)
+                    if (object.fault == false) {
                         // turn managed object into fault
                         context.refreshObject(object, mergeChanges: mergeChanges)
-                    } else {
-                        if let err = error {
-                            if kAERecordPrintLog {
-                                println("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(err)")
-                            }
-                        }
                     }
+                } catch let error as NSError {
+                    if kAERecordPrintLog {
+                        print(error)
+                        //print("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(error)")
+                    }
+                } catch _ {
+                    fatalError()
                 }
             })
         }
     }
     
-    class func refreshAllRegisteredObjects(#mergeChanges: Bool, context: NSManagedObjectContext = AERecord.defaultContext) {
+    class func refreshAllRegisteredObjects(mergeChanges mergeChanges: Bool, context: NSManagedObjectContext = AERecord.defaultContext) {
         var registeredObjectIDS = [NSManagedObjectID]()
-        for object in context.registeredObjects {
-            if let managedObject = object as? NSManagedObject {
-                registeredObjectIDS.append(managedObject.objectID)
-            }
+        for managedObject in context.registeredObjects {
+            registeredObjectIDS.append(managedObject.objectID)
         }
         refreshObjects(objectIDS: registeredObjectIDS, mergeChanges: mergeChanges)
     }
@@ -328,7 +347,7 @@ public extension NSManagedObject {
     
     public class var entityName: String {
         var name = NSStringFromClass(self)
-        name = name.componentsSeparatedByString(".").last
+        name = name.componentsSeparatedByString(".").last!
         return name
     }
     
@@ -353,8 +372,8 @@ public extension NSManagedObject {
         return object
     }
     
-    public class func createWithAttributes(attributes: [NSObject : AnyObject], context: NSManagedObjectContext = AERecord.defaultContext) -> Self {
-        let object = create(context: context)
+    public class func createWithAttributes(attributes: [String : AnyObject], context: NSManagedObjectContext = AERecord.defaultContext) -> Self {
+        let object = create(context)
         if attributes.count > 0 {
             object.setValuesForKeysWithDictionary(attributes)
         }
@@ -363,7 +382,7 @@ public extension NSManagedObject {
     
     public class func firstOrCreateWithAttribute(attribute: String, value: AnyObject, context: NSManagedObjectContext = AERecord.defaultContext) -> NSManagedObject {
         let predicate = NSPredicate(format: "%K = %@", argumentArray: [attribute, value])
-        let request = createFetchRequest(predicate: predicate)
+        let request = createFetchRequest(predicate)
         request.fetchLimit = 1
         let objects = AERecord.executeFetchRequest(request, context: context)
         return objects.first ?? createWithAttributes([attribute : value], context: context)
@@ -371,9 +390,9 @@ public extension NSManagedObject {
     
     // MARK: Deleting
     
-    public func delete(context: NSManagedObjectContext = AERecord.defaultContext) {
-        context.deleteObject(self)
-    }
+//    public func delete(context: NSManagedObjectContext = AERecord.defaultContext) {
+//        context.deleteObject(self)
+//    }
     
     public class func deleteAll(context: NSManagedObjectContext = AERecord.defaultContext) {
         if let objects = self.all(context: context) {
@@ -409,7 +428,7 @@ public extension NSManagedObject {
     }
     
     public class func firstWithPredicate(predicate: NSPredicate, sortDescriptors: [NSSortDescriptor]? = nil, context: NSManagedObjectContext = AERecord.defaultContext) -> NSManagedObject? {
-        let request = createFetchRequest(predicate: predicate, sortDescriptors: sortDescriptors)
+        let request = createFetchRequest(predicate, sortDescriptors: sortDescriptors)
         request.fetchLimit = 1
         let objects = AERecord.executeFetchRequest(request, context: context)
         return objects.first ?? nil
@@ -422,7 +441,7 @@ public extension NSManagedObject {
     
     public class func firstOrderedByAttribute(name: String, ascending: Bool = true, context: NSManagedObjectContext = AERecord.defaultContext) -> NSManagedObject? {
         let sortDescriptors = [NSSortDescriptor(key: name, ascending: ascending)]
-        return first(sortDescriptors: sortDescriptors, context: context)
+        return first(sortDescriptors, context: context)
     }
     
     // MARK: Finding All
@@ -434,7 +453,7 @@ public extension NSManagedObject {
     }
     
     public class func allWithPredicate(predicate: NSPredicate, sortDescriptors: [NSSortDescriptor]? = nil, context: NSManagedObjectContext = AERecord.defaultContext) -> [NSManagedObject]? {
-        let request = createFetchRequest(predicate: predicate, sortDescriptors: sortDescriptors)
+        let request = createFetchRequest(predicate, sortDescriptors: sortDescriptors)
         let objects = AERecord.executeFetchRequest(request, context: context)
         return objects.count > 0 ? objects : nil
     }
@@ -451,15 +470,14 @@ public extension NSManagedObject {
     }
     
     public class func countWithPredicate(predicate: NSPredicate? = nil, context: NSManagedObjectContext = AERecord.defaultContext) -> Int {
-        let request = createFetchRequest(predicate: predicate)
+        let request = createFetchRequest(predicate)
         request.includesSubentities = false
-        
-        var error: NSError?
+        var error:NSError?
         let count = context.countForFetchRequest(request, error: &error)
-        
-        if let err = error {
+        if (error != nil) {
             if kAERecordPrintLog {
-                println("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(err)")
+                print(error)
+                //print("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(error)")
             }
         }
         
@@ -468,7 +486,7 @@ public extension NSManagedObject {
     
     public class func countWithAttribute(attribute: String, value: AnyObject, context: NSManagedObjectContext = AERecord.defaultContext) -> Int {
         let predicate = NSPredicate(format: "%K = %@", argumentArray: [attribute, value])
-        return countWithPredicate(predicate: predicate, context: context)
+        return countWithPredicate(predicate, context: context)
     }
     
     // MARK: Distinct
@@ -488,25 +506,27 @@ public extension NSManagedObject {
     }
     
    public  class func distinctRecordsForAttributes(attributes: [String], predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor]? = nil, context: NSManagedObjectContext = AERecord.defaultContext) -> [Dictionary<String, AnyObject>]? {
-        let request = createFetchRequest(predicate: predicate, sortDescriptors: sortDescriptors)
+        let request = createFetchRequest(predicate, sortDescriptors: sortDescriptors)
         
         request.resultType = .DictionaryResultType
         request.returnsDistinctResults = true
         request.propertiesToFetch = attributes
         
         var distinctRecords: [Dictionary<String, AnyObject>]?
-        
-        var error: NSError?
-        if let distinctResult = context.executeFetchRequest(request, error: &error) as? [Dictionary<String, AnyObject>] {
-            distinctRecords = distinctResult
-        }
-        
-        if let err = error {
-            if kAERecordPrintLog {
-                println("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(err)")
+    
+        do {
+            if let distinctResult = try context.executeFetchRequest(request) as? [Dictionary<String, AnyObject>] {
+                distinctRecords = distinctResult
             }
+        } catch let error as NSError {
+            if kAERecordPrintLog {
+                print(error)
+                //print("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(err)")
+            }
+        } catch _ {
+            // FIXME: fatal error?
         }
-        
+    
         return distinctRecords
     }
     
@@ -514,7 +534,7 @@ public extension NSManagedObject {
     
     public class func autoIncrementedIntegerAttribute(attribute: String, context: NSManagedObjectContext = AERecord.defaultContext) -> Int {
         let sortDescriptor = NSSortDescriptor(key: attribute, ascending: false)
-        if let object = self.first(sortDescriptors: [sortDescriptor], context: context) {
+        if let object = self.first([sortDescriptor], context: context) {
             if let max = object.valueForKey(attribute) as? Int {
                 return max + 1
             } else {
@@ -528,7 +548,7 @@ public extension NSManagedObject {
     // MARK: Turn Object Into Fault
     
     public func refresh(mergeChanges: Bool = true, context: NSManagedObjectContext = AERecord.defaultContext) {
-        AERecord.refreshObjects(objectIDS: [objectID], mergeChanges: mergeChanges, context: context)
+        AERecord.refreshObjects([objectID], mergeChanges: mergeChanges, context: context)
     }
     
     // MARK: Batch Updating
@@ -543,21 +563,25 @@ public extension NSManagedObject {
         // execute request
         var batchResult: NSBatchUpdateResult? = nil
         context.performBlockAndWait { () -> Void in
-            var error: NSError?
-            if let result = context.executeRequest(request, error: &error) as? NSBatchUpdateResult {
-                batchResult = result
-            }
-            if let err = error {
-                if kAERecordPrintLog {
-                    println("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(err)")
+            do {
+                if let result = try context.executeRequest(request) as? NSBatchUpdateResult {
+                    batchResult = result
                 }
+            } catch let error as NSError {
+                if kAERecordPrintLog {
+                    print(error)
+                    //                    print("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(err)")
+                }
+//            }
+            } catch _ {
+                // FIXME: fatal?
             }
         }
         return batchResult
     }
     
     class func objectsCountForBatchUpdate(predicate: NSPredicate? = nil, properties: [NSObject : AnyObject]? = nil, context: NSManagedObjectContext = AERecord.defaultContext) -> Int {
-        if let result = batchUpdate(predicate: predicate, properties: properties, resultType: .UpdatedObjectsCountResultType, context: context) {
+        if let result = batchUpdate(predicate, properties: properties, resultType: .UpdatedObjectsCountResultType, context: context) {
             if let count = result.result as? Int {
                 return count
             } else {
@@ -569,9 +593,9 @@ public extension NSManagedObject {
     }
     
     class func batchUpdateAndRefreshObjects(predicate: NSPredicate? = nil, properties: [NSObject : AnyObject]? = nil, context: NSManagedObjectContext = AERecord.defaultContext) {
-        if let result = batchUpdate(predicate: predicate, properties: properties, resultType: .UpdatedObjectIDsResultType, context: context) {
+        if let result = batchUpdate(predicate, properties: properties, resultType: .UpdatedObjectIDsResultType, context: context) {
             if let objectIDS = result.result as? [NSManagedObjectID] {
-                AERecord.refreshObjects(objectIDS: objectIDS, mergeChanges: true, context: context)
+                AERecord.refreshObjects(objectIDS, mergeChanges: true, context: context)
             }
         }
     }
