@@ -368,7 +368,7 @@ public extension NSManagedObject {
     
     public class func create(context: NSManagedObjectContext = AERecord.defaultContext) -> Self {
         let entityDescription = NSEntityDescription.entityForName(entityName, inManagedObjectContext: context)
-        let object = self(entity: entityDescription!, insertIntoManagedObjectContext: context)
+        let object = self.init(entity: entityDescription!, insertIntoManagedObjectContext: context)
         return object
     }
     
