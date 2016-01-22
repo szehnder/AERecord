@@ -355,12 +355,15 @@ public extension NSManagedObject {
         return NSEntityDescription.entityForName(entityName, inManagedObjectContext: AERecord.defaultContext)
     }
     
-    public class func createFetchRequest(predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor]? = nil) -> NSFetchRequest {
+    public class func createFetchRequest(predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor]? = nil, limit:Int? = nil) -> NSFetchRequest {
         // create request
         let request = NSFetchRequest(entityName: entityName)
         // set request parameters
         request.predicate = predicate
         request.sortDescriptors = sortDescriptors
+        if (limit != nil) {
+            request.fetchLimit = limit!
+        }
         return request
     }
     
@@ -452,8 +455,8 @@ public extension NSManagedObject {
         return objects.count > 0 ? objects : nil
     }
     
-    public class func allWithPredicate(predicate: NSPredicate, sortDescriptors: [NSSortDescriptor]? = nil, context: NSManagedObjectContext = AERecord.defaultContext) -> [NSManagedObject]? {
-        let request = createFetchRequest(predicate, sortDescriptors: sortDescriptors)
+    public class func allWithPredicate(predicate: NSPredicate, sortDescriptors: [NSSortDescriptor]? = nil, context: NSManagedObjectContext = AERecord.defaultContext, limit:Int? = nil) -> [NSManagedObject]? {
+        let request = createFetchRequest(predicate, sortDescriptors: sortDescriptors, limit: limit)
         let objects = AERecord.executeFetchRequest(request, context: context)
         return objects.count > 0 ? objects : nil
     }
