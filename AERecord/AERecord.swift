@@ -161,7 +161,7 @@ public class AEStack {
                 error = NSError(domain: AEStack.bundleIdentifier, code: 1, userInfo: userInfoDictionary)
                 if let err = error {
                     if kAERecordPrintLog {
-                        print("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(err)")
+                        print("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(#function) | line: \(#line)\n\(err)")
                     }
                 }
                 return error
@@ -201,7 +201,7 @@ public class AEStack {
         
         if let err = error {
             if kAERecordPrintLog {
-                print("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(err)")
+                print("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(#function) | line: \(#line)\n\(err)")
             }
         }
         return error ?? nil
@@ -221,7 +221,7 @@ public class AEStack {
     deinit {
         stopReceivingContextNotifications()
         if kAERecordPrintLog {
-            print("\(NSStringFromClass(self.dynamicType)) deinitialized - function: \(__FUNCTION__) | line: \(__LINE__)\n")
+            print("\(NSStringFromClass(self.dynamicType)) deinitialized - function: \(#function) | line: \(#line)\n")
         }
     }
     
@@ -244,7 +244,7 @@ public class AEStack {
             }
             if let err = error {
                 if kAERecordPrintLog {
-                    print("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(err)")
+                    print("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(#function) | line: \(#line)\n\(err)")
                 }
             }
         }
@@ -261,7 +261,7 @@ public class AEStack {
                     try moc.save()
                 } catch let error as NSError {
                     if kAERecordPrintLog {
-                        print("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(error)")
+                        print("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(#function) | line: \(#line)\n\(error)")
                     }
                 } catch _ {
                     // FIXME: do something with other exception
@@ -278,7 +278,7 @@ public class AEStack {
                     try moc.save()
                 } catch let error as NSError {
                     if kAERecordPrintLog {
-                        print("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(__FUNCTION__) | line: \(__LINE__)\n\(error)")
+                        print("Error occured in \(NSStringFromClass(self.dynamicType)) - function: \(#function) | line: \(#line)\n\(error)")
                     }
                 } catch _ {
                     // FIXME: do something with other exception
@@ -290,8 +290,8 @@ public class AEStack {
     // MARK: Context Sync
     
     func startReceivingContextNotifications() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "contextDidSave:", name: NSManagedObjectContextDidSaveNotification, object: mainContext)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "contextDidSave:", name: NSManagedObjectContextDidSaveNotification, object: backgroundContext)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AEStack.contextDidSave(_:)), name: NSManagedObjectContextDidSaveNotification, object: mainContext)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AEStack.contextDidSave(_:)), name: NSManagedObjectContextDidSaveNotification, object: backgroundContext)
     }
     
     func stopReceivingContextNotifications() {
